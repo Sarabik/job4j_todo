@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "tasks")
 @Data
-@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Task {
     @Id
@@ -21,4 +20,5 @@ public class Task {
     private LocalDateTime created;
 
     private boolean done;
+
 }

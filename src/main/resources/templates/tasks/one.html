@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+
+    <title>ToDo List</title>
+</head>
+<body>
+<div class="container-fluid p-3">
+    <div th:object="${selectedTask}" class="container-fluid border border-primary border-opacity-50">
+        <div class="row p-3">
+            <h1>ToDo List</h1>
+        </div>
+        <div class="bg-primary rounded">
+            <p class="text-white p-2">Task #<span th:text="*{id}"></span></p>
+        </div>
+        <form th:action="@{/tasks/update}" method="post">
+            <input type="hidden" name="id" th:field="*{id}">
+            <input type="hidden" name="created" th:field="*{created}">
+            <p>Created: <span th:text="*{#temporals.format(created, 'dd.MM.yyyy HH:mm')}"></span></p>
+            <div class="mb-3">
+                <textarea type="text" class="form-control border border-primary border-opacity-50" rows="7" th:field="*{description}"
+                          id="description" name="description" placeholder="Enter a task description in this field"></textarea>
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" name="done" class="form-check-input" id="done" th:field="*{done}">
+                <label class="form-check-label" for="done">Task is done</label>
+            </div>
+            <div class="pb-2">
+                <button type="submit" class="btn btn-primary">Update task info</button>
+                <a class="btn btn-primary m-2" href="/tasks" role="button">Back to task list</a>
+            </div>
+        </form>
+        <form th:action="@{/tasks/delete}" method="post">
+            <input type="hidden" name="id" th:field="*{id}">
+            <button type="submit" class="btn btn-primary">Delete task</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
