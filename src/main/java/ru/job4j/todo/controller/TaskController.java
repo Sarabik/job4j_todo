@@ -36,20 +36,15 @@ public class TaskController {
     }
 
     @GetMapping("/create")
-    public String getCreationPage(Model model) {
+    public String getCreationPage() {
         return "tasks/create";
     }
 
     @PostMapping("/create")
-    public String createTask(@ModelAttribute Task task, Model model) {
-        try {
-            task.setCreated(LocalDateTime.now());
-            taskService.save(task);
-            return "tasks/list";
-        } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "errors/404";
-        }
+    public String createTask(@ModelAttribute Task task) {
+        task.setCreated(LocalDateTime.now());
+        taskService.save(task);
+        return "redirect:/";
     }
 
     @GetMapping("/{taskId}")
@@ -64,28 +59,14 @@ public class TaskController {
     }
 
     @PostMapping("/update")
-    public String updateTask(@ModelAttribute Task task, Model model) {
-        try {
-            System.out.println("**************");
-            System.out.println(task);
-            taskService.update(task);
-            return "tasks/list";
-        } catch (Exception e) {
-            model.addAttribute("message", "Task update failed");
-            return "errors/404";
-        }
+    public String updateTask(@ModelAttribute Task task) {
+        taskService.update(task);
+        return "redirect:/";
     }
 
-    @PostMapping("/delete")
-    public String deleteTask(Model model, @ModelAttribute Task task) {
-        try {
-            System.out.println("**************");
-            System.out.println(task);
-            taskService.deleteById(task.getId());
-            return "tasks/list";
-        } catch (Exception e) {
-            model.addAttribute("message", "Task delete failed");
-            return "errors/404";
-        }
+    @GetMapping("/delete/{id}")
+    public String deleteTask(@PathVariable int id) {
+        taskService.deleteById(id);
+        return "redirect:/";
     }
 }

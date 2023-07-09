@@ -33,12 +33,9 @@
             </div>
             <div class="pb-2">
                 <button type="submit" class="btn btn-primary">Update task info</button>
-                <a class="btn btn-primary m-2" href="/tasks" role="button">Back to task list</a>
+                <a class="btn btn-primary ml-2" th:href="@{/tasks/delete/{id}(id=${selectedTask.id})}" role="button">Delete task</a>
+                <a class="btn btn-primary ml-2" href="/tasks" role="button">Back to task list</a>
             </div>
-        </form>
-        <form th:action="@{/tasks/delete}" method="post">
-            <input type="hidden" name="id" th:field="*{id}">
-            <button type="submit" class="btn btn-primary">Delete task</button>
         </form>
     </div>
 </div>

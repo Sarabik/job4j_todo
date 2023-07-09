@@ -25,7 +25,6 @@ public class HqlTaskRepository implements TaskRepository {
             session.persist(task);
             session.getTransaction().commit();
         } catch (Exception e) {
-            e.printStackTrace();
             session.getTransaction().rollback();
         } finally {
             session.close();
@@ -93,7 +92,6 @@ public class HqlTaskRepository implements TaskRepository {
             session.update(task);
             session.getTransaction().commit();
         } catch (Exception e) {
-            e.printStackTrace();
             session.getTransaction().rollback();
         } finally {
             session.close();
@@ -110,7 +108,6 @@ public class HqlTaskRepository implements TaskRepository {
                     .executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
-            e.printStackTrace();
             session.getTransaction().rollback();
         } finally {
             session.close();
