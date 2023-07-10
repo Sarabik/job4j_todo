@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
-public class HqlTaskRepository implements TaskRepository {
+public class HibernateTaskRepository implements TaskRepository {
 
     private final SessionFactory sf;
 
@@ -90,6 +90,22 @@ public class HqlTaskRepository implements TaskRepository {
         try {
             session.beginTransaction();
             session.update(task);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public void updateTaskStatus(int id) {
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            session.createQuery("UPDATE Task SET done = true WHERE id = :fId")
+                    .setParameter("fId", id)
+                    .executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();

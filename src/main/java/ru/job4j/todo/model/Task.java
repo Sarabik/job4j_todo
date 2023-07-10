@@ -15,6 +15,8 @@ public class Task {
     @EqualsAndHashCode.Include
     private int id;
 
+    private String title;
+
     private String description;
 
     private LocalDateTime created;

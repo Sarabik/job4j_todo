@@ -19,24 +19,33 @@
         <div class="bg-primary rounded">
             <p class="text-white p-2">Task #<span th:text="*{id}"></span></p>
         </div>
-        <form th:action="@{/tasks/update}" method="post">
-            <input type="hidden" name="id" th:field="*{id}">
-            <input type="hidden" name="created" th:field="*{created}">
-            <p>Created: <span th:text="*{#temporals.format(created, 'dd.MM.yyyy HH:mm')}"></span></p>
-            <div class="mb-3">
-                <textarea type="text" class="form-control border border-primary border-opacity-50" rows="7" th:field="*{description}"
-                          id="description" name="description" placeholder="Enter a task description in this field"></textarea>
-            </div>
-            <div class="form-check mb-3">
-                <input type="checkbox" name="done" class="form-check-input" id="done" th:field="*{done}">
-                <label class="form-check-label" for="done">Task is done</label>
-            </div>
-            <div class="pb-2">
-                <button type="submit" class="btn btn-primary">Update task info</button>
-                <a class="btn btn-primary ml-2" th:href="@{/tasks/delete/{id}(id=${selectedTask.id})}" role="button">Delete task</a>
-                <a class="btn btn-primary ml-2" href="/tasks" role="button">Back to task list</a>
-            </div>
-        </form>
+        <div>
+            <dl class="row">
+                <dt class="col-sm-3">Task:</dt>
+                <dd class="col-sm-9" th:text="*{title}"></dd>
+                <dt class="col-sm-3">Task description:</dt>
+                <dd class="col-sm-9" th:text="*{description}"></dd>
+                <dt class="col-sm-3">Created:</dt>
+                <dd class="col-sm-9" th:text="*{#temporals.format(created, 'dd.MM.yyyy HH:mm')}"></dd>
+                <dt class="col-sm-3">Done:</dt>
+                <dd class="col-sm-9">
+                    <span th:if="*{done}">
+                    <i class="bi bi-check-square"></i>
+                </span>
+                    <span th:if="*{!done}">
+                    <i class="bi bi-square"></i>
+                </span>
+                </dd>
+            </dl>
+        </div>
+        <div class="pb-2">
+            <a class="btn btn-primary ml-2" th:href="@{/tasks/edit/{id}(id=*{id})}" role="button">Change task info</a>
+            <span th:if="*{!done}">
+                <a class="btn btn-primary ml-2" th:href="@{/tasks/statusToDone/{id}(id=*{id})}" role="button">Task is done</a>
+            </span>
+            <a class="btn btn-primary ml-2" th:href="@{/tasks/delete/{id}(id=*{id})}" role="button">Delete task</a>
+            <a class="btn btn-primary opacity-50 ml-2" href="/tasks" role="button">Back to task list</a>
+        </div>
     </div>
 </div>
 </body>

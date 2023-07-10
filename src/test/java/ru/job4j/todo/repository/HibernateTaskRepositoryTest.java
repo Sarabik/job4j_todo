@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
-class HqlTaskRepositoryTest {
-    private static TaskRepository hqlTaskRepository;
+class HibernateTaskRepositoryTest {
+    private static TaskRepository hibernateTaskRepository;
     private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
 
@@ -27,7 +27,7 @@ class HqlTaskRepositoryTest {
         registry = new StandardServiceRegistryBuilder()
                 .configure().build();
         sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-        hqlTaskRepository = new HqlTaskRepository(sessionFactory);
+        hibernateTaskRepository = new HibernateTaskRepository(sessionFactory);
     }
 
     @BeforeEach
@@ -53,17 +53,17 @@ class HqlTaskRepositoryTest {
     @Test
     public void whenSaveTaskThenGetItById() {
         Task task1 = new Task();
-        task1.setDescription("Write a book");
+        task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
-        hqlTaskRepository.save(task1);
-        Optional<Task> optionalTask = hqlTaskRepository.getById(1);
+        hibernateTaskRepository.save(task1);
+        Optional<Task> optionalTask = hibernateTaskRepository.getById(1);
 
         assertThat(optionalTask.get()).isEqualTo(task1);
     }
 
     @Test
-    public void whenDidFindTaskThenGetEmptyOptional() {
-        Optional<Task> optionalTask = hqlTaskRepository.getById(2);
+    public void whenDidNotFindTaskThenGetEmptyOptional() {
+        Optional<Task> optionalTask = hibernateTaskRepository.getById(2);
 
         assertThat(optionalTask).isEmpty();
     }
@@ -71,15 +71,15 @@ class HqlTaskRepositoryTest {
     @Test
     public void whenGetAllTasksThenGetCollection() {
         Task task1 = new Task();
-        task1.setDescription("Write a book");
+        task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
         Task task2 = new Task();
-        task2.setDescription("Clean the room");
+        task2.setTitle("Clean the room");
         task2.setCreated(LocalDateTime.now());
-        hqlTaskRepository.save(task1);
-        hqlTaskRepository.save(task2);
+        hibernateTaskRepository.save(task1);
+        hibernateTaskRepository.save(task2);
 
-        Collection<Task> collection = hqlTaskRepository.getAll();
+        Collection<Task> collection = hibernateTaskRepository.getAll();
 
         assertThat(collection).containsExactly(task1, task2);
     }
@@ -87,31 +87,58 @@ class HqlTaskRepositoryTest {
     @Test
     public void whenGetTasksByStatusThenGetCollection() {
         Task task1 = new Task();
-        task1.setDescription("Write a book");
+        task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
         Task task2 = new Task();
-        task2.setDescription("Clean the room");
+        task2.setTitle("Clean the room");
         task2.setCreated(LocalDateTime.now());
         task2.setDone(true);
-        hqlTaskRepository.save(task1);
-        hqlTaskRepository.save(task2);
+        hibernateTaskRepository.save(task1);
+        hibernateTaskRepository.save(task2);
 
-        Collection<Task> notDone = hqlTaskRepository.getByStatus(false);
-        Collection<Task> done = hqlTaskRepository.getByStatus(true);
+        Collection<Task> notDone = hibernateTaskRepository.getByStatus(false);
+        Collection<Task> done = hibernateTaskRepository.getByStatus(true);
 
         assertThat(notDone).containsExactly(task1);
         assertThat(done).containsExactly(task2);
     }
 
     @Test
+    public void whenUpdateTasksThenGetTasksUpdated() {
+        Task task1 = new Task();
+        task1.setTitle("Write a book");
+        task1.setCreated(LocalDateTime.now());
+        hibernateTaskRepository.save(task1);
+
+        Task task2 = new Task();
+        task2.setId(task1.getId());
+        task2.setTitle("Clean the room");
+        hibernateTaskRepository.update(task2);
+
+        assertThat(hibernateTaskRepository.getById(1).get().getTitle()).isEqualTo("Clean the room");
+    }
+
+    @Test
+    public void whenUpdateTaskStatusThenGetDoneStatus() {
+        Task task1 = new Task();
+        task1.setTitle("Write a book");
+        task1.setCreated(LocalDateTime.now());
+        hibernateTaskRepository.save(task1);
+
+        hibernateTaskRepository.updateTaskStatus(1);
+
+        assertThat(hibernateTaskRepository.getById(1).get().isDone()).isTrue();
+    }
+
+    @Test
     public void whenDeleteByIdThenGetEmptyCollection() {
         Task task1 = new Task();
-        task1.setDescription("Write a book");
+        task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
-        hqlTaskRepository.save(task1);
+        hibernateTaskRepository.save(task1);
 
-        hqlTaskRepository.deleteById(1);
+        hibernateTaskRepository.deleteById(1);
 
-        assertThat(hqlTaskRepository.getAll()).isEmpty();
+        assertThat(hibernateTaskRepository.getAll()).isEmpty();
     }
 }

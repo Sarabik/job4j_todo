@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping({"/", "/tasks"})
+@RequestMapping("/tasks")
 public class TaskController {
 
     private final TaskService taskService;
@@ -52,21 +52,53 @@ public class TaskController {
         Optional<Task> optionalTask = taskService.getById(taskId);
         if (optionalTask.isEmpty()) {
             model.addAttribute("message", "Task is not found");
-            return "errors/404";
+            return "templates/errors/404";
         }
         model.addAttribute("selectedTask", optionalTask.get());
         return "tasks/one";
     }
 
-    @PostMapping("/update")
-    public String updateTask(@ModelAttribute Task task) {
-        taskService.update(task);
+    @GetMapping("/delete/{id}")
+    public String deleteTask(@PathVariable int id, Model model) {
+        try {
+            taskService.deleteById(id);
+        } catch (Exception e) {
+            model.addAttribute("message", "Task is not deleted!");
+            return "errors/404";
+        }
         return "redirect:/";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteTask(@PathVariable int id) {
-        taskService.deleteById(id);
+    @GetMapping("/edit/{id}")
+    public String getEditPage(@PathVariable int id, Model model) {
+        Optional<Task> optionalTask = taskService.getById(id);
+        if (optionalTask.isEmpty()) {
+            model.addAttribute("message", "Task is not found!");
+            return "errors/404";
+        }
+        model.addAttribute("selectedTask", optionalTask.get());
+        return "tasks/edit";
+    }
+
+    @PostMapping("/update")
+    public String updateTask(@ModelAttribute Task task, Model model) {
+        try {
+            taskService.update(task);
+        } catch (Exception e) {
+            model.addAttribute("message", "Task is not changed!");
+            return "errors/404";
+        }
         return "redirect:/";
+    }
+
+    @GetMapping("/statusToDone/{id}")
+    public String statusToDone(@PathVariable int id, Model model) {
+        try {
+            taskService.updateTaskStatus(id);
+        } catch (Exception e) {
+            model.addAttribute("message", "Task status is not changed!");
+            return "errors/404";
+        }
+        return "redirect:/tasks/" + id;
     }
 }

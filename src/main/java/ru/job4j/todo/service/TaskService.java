@@ -16,5 +16,7 @@ public interface TaskService {
 
     void update(Task task);
 
+    void updateTaskStatus(int id);
+
     void deleteById(int id);
 }

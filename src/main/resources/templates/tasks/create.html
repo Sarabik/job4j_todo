@@ -21,12 +21,17 @@
         </div>
         <form th:action="@{/tasks/create}" method="post">
             <div class="mb-3">
+                <textarea type="text" class="form-control border border-primary border-opacity-50" rows="2"
+                          id="title" name="title" placeholder="Enter new task"></textarea>
+            </div>
+            <div class="mb-3">
                 <textarea type="text" class="form-control border border-primary border-opacity-50" rows="7"
-                          id="description" name="description" placeholder="Enter a task description in this field"></textarea>
+                          id="description" name="description" placeholder="Enter additional information about this task"></textarea>
             </div>
             <div class="pb-2">
                 <button type="submit" class="btn btn-primary">Add task</button>
-                <a class="btn btn-primary m-2" href="/tasks" role="button">Back to task list</a>
+                <a class="btn btn-primary opacity-50 m-2" href="/tasks" role="button">Back to task list</a>
+
             </div>
 
         </form>

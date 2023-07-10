@@ -12,7 +12,7 @@
       <td th:text="${task.id}"></td>
       <td class="text-truncate" style="max-width: 20px">
           <a class="link-dark link-underline-opacity-0 link-underline-opacity-50-hover" th:href="@{/tasks/{taskId}(taskId=${task.id})}">
-              <span th:text="${task.description}"></span>
+              <span th:text="${task.title}"></span>
           </a>
       </td>
       <td style="min-width: 150px" th:text="${#temporals.format(task.created, 'dd.MM.yyyy HH:mm')}"></td>
