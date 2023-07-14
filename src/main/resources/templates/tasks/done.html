@@ -13,9 +13,12 @@
 <body>
   <div class="container-fluid p-3">
     <div class="container-fluid border border-primary border-opacity-50">
-    <div class="row p-3">
-      <h1>ToDo List</h1>
-    </div>
+      <div class="d-flex justify-content-between align-items-center p-3">
+        <h1>ToDo List</h1>
+        <div>
+          <a class="link-dark link-underline-opacity-0 link-underline-opacity-100-hover" th:href="@{/users/logout}">Log out</a>
+        </div>
+      </div>
     <nav class="nav nav-pills nav-fill text-white bg-primary bg-opacity-50 rounded">
       <a class="nav-item nav-link text-dark p-2" href="/tasks">All tasks</a>
       <a class="nav-item nav-link text-dark p-2" href="/tasks/notDone">Tasks to do</a>
