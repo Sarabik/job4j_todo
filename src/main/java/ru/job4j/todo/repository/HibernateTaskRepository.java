@@ -97,12 +97,11 @@ public class HibernateTaskRepository implements TaskRepository {
                     """;
             changed = session.createQuery(sql)
                     .setParameter("fTitle", task.getTitle())
-                    .setParameter("uDescription", task.getDescription())
-                    .setParameter("uCreated", task.getCreated())
-                    .setParameter("uDone", task.isDone())
-                    .setParameter("uId", task.getId())
+                    .setParameter("fDescription", task.getDescription())
+                    .setParameter("fCreated", task.getCreated())
+                    .setParameter("fDone", task.isDone())
+                    .setParameter("fId", task.getId())
                     .executeUpdate();
-            session.update(task);
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
