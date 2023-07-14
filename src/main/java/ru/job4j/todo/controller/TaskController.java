@@ -52,7 +52,7 @@ public class TaskController {
         Optional<Task> optionalTask = taskService.getById(taskId);
         if (optionalTask.isEmpty()) {
             model.addAttribute("message", "Task is not found");
-            return "templates/errors/404";
+            return "errors/404";
         }
         model.addAttribute("selectedTask", optionalTask.get());
         return "tasks/one";
@@ -60,9 +60,8 @@ public class TaskController {
 
     @GetMapping("/delete/{id}")
     public String deleteTask(@PathVariable int id, Model model) {
-        try {
-            taskService.deleteById(id);
-        } catch (Exception e) {
+        boolean isDeleted = taskService.deleteById(id);
+        if (!isDeleted) {
             model.addAttribute("message", "Task is not deleted!");
             return "errors/404";
         }
@@ -82,9 +81,8 @@ public class TaskController {
 
     @PostMapping("/update")
     public String updateTask(@ModelAttribute Task task, Model model) {
-        try {
-            taskService.update(task);
-        } catch (Exception e) {
+        boolean isUpdated = taskService.update(task);
+        if (!isUpdated) {
             model.addAttribute("message", "Task is not changed!");
             return "errors/404";
         }
@@ -93,9 +91,8 @@ public class TaskController {
 
     @GetMapping("/statusToDone/{id}")
     public String statusToDone(@PathVariable int id, Model model) {
-        try {
-            taskService.updateTaskStatus(id);
-        } catch (Exception e) {
+        boolean isUpdated = taskService.updateTaskStatus(id);
+        if (!isUpdated) {
             model.addAttribute("message", "Task status is not changed!");
             return "errors/404";
         }

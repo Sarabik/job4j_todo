@@ -85,10 +85,23 @@ public class HibernateTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void update(Task task) {
+    public boolean update(Task task) {
+        int changed = 0;
         Session session = sf.openSession();
         try {
             session.beginTransaction();
+            String sql = """
+                    UPDATE Task SET title = :fTitle, 
+                    description = :fDescription, created = :fCreated, 
+                    done = :fDone WHERE id = :fId
+                    """;
+            changed = session.createQuery(sql)
+                    .setParameter("fTitle", task.getTitle())
+                    .setParameter("uDescription", task.getDescription())
+                    .setParameter("uCreated", task.getCreated())
+                    .setParameter("uDone", task.isDone())
+                    .setParameter("uId", task.getId())
+                    .executeUpdate();
             session.update(task);
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -96,14 +109,16 @@ public class HibernateTaskRepository implements TaskRepository {
         } finally {
             session.close();
         }
+        return changed > 0;
     }
 
     @Override
-    public void updateTaskStatus(int id) {
+    public boolean updateTaskStatus(int id) {
+        int changed = 0;
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-            session.createQuery("UPDATE Task SET done = true WHERE id = :fId")
+            changed = session.createQuery("UPDATE Task SET done = true WHERE id = :fId")
                     .setParameter("fId", id)
                     .executeUpdate();
             session.getTransaction().commit();
@@ -112,14 +127,16 @@ public class HibernateTaskRepository implements TaskRepository {
         } finally {
             session.close();
         }
+        return changed > 0;
     }
 
     @Override
-    public void deleteById(int id) {
+    public boolean deleteById(int id) {
+        int changed = 0;
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-            session.createQuery("DELETE Task WHERE id = :fId")
+            changed = session.createQuery("DELETE Task WHERE id = :fId")
                     .setParameter("fId", id)
                     .executeUpdate();
             session.getTransaction().commit();
@@ -128,5 +145,6 @@ public class HibernateTaskRepository implements TaskRepository {
         } finally {
             session.close();
         }
+        return changed > 0;
     }
 }

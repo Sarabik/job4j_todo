@@ -15,10 +15,10 @@ public interface TaskRepository {
 
     Optional<Task> getById(int id);
 
-    void update(Task task);
+    boolean update(Task task);
 
-    void updateTaskStatus(int id);
+    boolean updateTaskStatus(int id);
 
-    void deleteById(int id);
+    boolean deleteById(int id);
 
 }
