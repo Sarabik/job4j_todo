@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface TaskRepository {
 
-    void save(Task task);
+    Optional<Task> save(Task task);
 
     Collection<Task> getAll();
 

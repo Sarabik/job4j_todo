@@ -27,7 +27,7 @@ class HibernateTaskRepositoryTest {
         registry = new StandardServiceRegistryBuilder()
                 .configure().build();
         sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-        hibernateTaskRepository = new HibernateTaskRepository(sessionFactory);
+        hibernateTaskRepository = new HibernateTaskRepository(new CrudRepository(sessionFactory));
     }
 
     @BeforeEach
@@ -55,8 +55,7 @@ class HibernateTaskRepositoryTest {
         Task task1 = new Task();
         task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
-        hibernateTaskRepository.save(task1);
-        Optional<Task> optionalTask = hibernateTaskRepository.getById(1);
+        Optional<Task> optionalTask = hibernateTaskRepository.save(task1);
 
         assertThat(optionalTask.get()).isEqualTo(task1);
     }

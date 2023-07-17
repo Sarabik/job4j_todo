@@ -25,7 +25,7 @@ class HibernateUserRepositoryTest {
         registry = new StandardServiceRegistryBuilder()
                 .configure().build();
         sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-        hibernateUserRepository = new HibernateUserRepository(sessionFactory);
+        hibernateUserRepository = new HibernateUserRepository(new CrudRepository(sessionFactory));
     }
 
     @BeforeEach

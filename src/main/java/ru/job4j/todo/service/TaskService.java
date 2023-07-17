@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface TaskService {
-    void save(Task task);
+    Optional<Task> save(Task task);
 
     Collection<Task> getAll();
 
