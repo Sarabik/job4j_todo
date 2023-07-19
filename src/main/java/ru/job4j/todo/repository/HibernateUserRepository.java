@@ -15,14 +15,25 @@ public class HibernateUserRepository implements UserRepository {
 
     @Override
     public Optional<User> save(User user) {
-        return Optional.ofNullable(crudRepository.getOne(user));
+        Optional<User> optionalUser;
+        try {
+            optionalUser = crudRepository.getOptional(user);
+        } catch (Exception e) {
+            optionalUser = Optional.empty();
+        }
+        return optionalUser;
     }
 
     @Override
     public Optional<User> findByLoginAndPassword(String login, String password) {
-        User foundUser = crudRepository.getOne(
-                "FROM User WHERE login = :fLogin AND password = :fPassword", User.class,
-                Map.of("fLogin", login, "fPassword", password));
-        return Optional.ofNullable(foundUser);
+        Optional<User> optionalUser;
+        try {
+            optionalUser = crudRepository.getOptional(
+                    "FROM User WHERE login = :fLogin AND password = :fPassword", User.class,
+                    Map.of("fLogin", login, "fPassword", password));
+        } catch (Exception e) {
+            optionalUser = Optional.empty();
+        }
+        return optionalUser;
     }
 }

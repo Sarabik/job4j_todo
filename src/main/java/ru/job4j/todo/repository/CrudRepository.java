@@ -8,6 +8,7 @@ import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 @AllArgsConstructor
@@ -27,28 +28,27 @@ public class CrudRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
-        return null;
     }
 
-    public <T> T getOne(T t) {
-        Function<Session, T> command = session -> {
+    public <T> Optional<T> getOptional(T t) {
+        Function<Session, Optional<T>> command = session -> {
             session.persist(t);
-            return t;
+            return Optional.of(t);
         };
         return tx(command);
     }
 
-    public <T> T getOne(String query, Class<T> cl, Map<String, Object> args) {
-        Function<Session, T> command = session -> {
+    public <T> Optional<T> getOptional(String query, Class<T> cl, Map<String, Object> args) {
+        Function<Session, Optional<T>> command = session -> {
             Query<T> q = session.createQuery(query, cl);
             for (Map.Entry<String, Object> entry : args.entrySet()) {
                 q.setParameter(entry.getKey(), entry.getValue());
             }
-            return q.uniqueResult();
+            return q.uniqueResultOptional();
         };
         return tx(command);
     }
@@ -71,7 +71,7 @@ public class CrudRepository {
         return tx(command);
     }
 
-    public <T> Boolean ifChanged(T t) {
+    public <T> boolean ifChanged(T t) {
         Function<Session, Boolean> command = session -> {
             session.update(t);
             return true;
@@ -79,7 +79,7 @@ public class CrudRepository {
         return tx(command);
     }
 
-    public Boolean ifChanged(String query, Map<String, Object> args) {
+    public boolean ifChanged(String query, Map<String, Object> args) {
         Function<Session, Boolean> command = session -> {
             var q = session.createQuery(query);
             for (Map.Entry<String, Object> entry : args.entrySet()) {

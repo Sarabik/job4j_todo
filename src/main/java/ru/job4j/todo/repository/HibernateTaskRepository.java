@@ -14,7 +14,13 @@ public class HibernateTaskRepository implements TaskRepository {
 
     @Override
     public Optional<Task> save(Task task) {
-        return Optional.ofNullable(crudRepository.getOne(task));
+        Optional<Task> optionalTask;
+        try {
+            optionalTask = crudRepository.getOptional(task);
+        } catch (Exception e) {
+            optionalTask = Optional.empty();
+        }
+        return optionalTask;
     }
 
     @Override
@@ -30,27 +36,48 @@ public class HibernateTaskRepository implements TaskRepository {
 
     @Override
     public Optional<Task> getById(int id) {
-        Task foundTask = crudRepository.getOne(
-                "FROM Task WHERE id = :fId", Task.class, Map.of("fId", id));
-        return Optional.ofNullable(foundTask);
+        Optional<Task> optionalTask;
+        try {
+            optionalTask = crudRepository.getOptional(
+                    "FROM Task WHERE id = :fId", Task.class, Map.of("fId", id));
+        } catch (Exception e) {
+            optionalTask = Optional.empty();
+        }
+        return optionalTask;
     }
 
     @Override
     public boolean update(Task task) {
-        return crudRepository.ifChanged(task) != null;
+        boolean ifUpdated;
+        try {
+            ifUpdated = crudRepository.ifChanged(task);
+        } catch (Exception e) {
+            ifUpdated = false;
+        }
+        return ifUpdated;
     }
 
     @Override
     public boolean updateTaskStatus(int id) {
-        Boolean ifUpdated = crudRepository.ifChanged(
-                "UPDATE Task SET done = true WHERE id = :fId", Map.of("fId", id));
-        return ifUpdated != null;
+        boolean ifUpdated;
+        try {
+            ifUpdated = crudRepository.ifChanged(
+                    "UPDATE Task SET done = true WHERE id = :fId", Map.of("fId", id));
+        } catch (Exception e) {
+            ifUpdated = false;
+        }
+        return ifUpdated;
     }
 
     @Override
     public boolean deleteById(int id) {
-        Boolean ifUpdated = crudRepository.ifChanged(
-                "DELETE Task WHERE id = :fId", Map.of("fId", id));
-        return ifUpdated != null;
+        boolean ifDeleted;
+        try {
+            ifDeleted = crudRepository.ifChanged(
+                    "DELETE Task WHERE id = :fId", Map.of("fId", id));
+        } catch (Exception e) {
+            ifDeleted = false;
+        }
+        return ifDeleted;
     }
 }
