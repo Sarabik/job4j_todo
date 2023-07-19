@@ -1,0 +1,1 @@
+ALTER TABLE tasks ADD COLUMN users_id int NOT NULL references users(id);

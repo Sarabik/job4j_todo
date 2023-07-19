@@ -5,8 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.TaskService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -41,8 +43,10 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String createTask(@ModelAttribute Task task) {
+    public String createTask(@ModelAttribute Task task, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
         task.setCreated(LocalDateTime.now());
+        task.setUser(user);
         taskService.save(task);
         return "redirect:/";
     }
@@ -80,7 +84,9 @@ public class TaskController {
     }
 
     @PostMapping("/update")
-    public String updateTask(@ModelAttribute Task task, Model model) {
+    public String updateTask(@ModelAttribute Task task, Model model, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        task.setUser(user);
         boolean isUpdated = taskService.update(task);
         if (!isUpdated) {
             model.addAttribute("message", "Task is not changed!");

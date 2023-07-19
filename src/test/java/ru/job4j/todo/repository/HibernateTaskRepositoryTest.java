@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.model.User;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -21,6 +22,7 @@ class HibernateTaskRepositoryTest {
     private static TaskRepository hibernateTaskRepository;
     private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
+    private User user;
 
     @BeforeAll
     public static void initRepository() {
@@ -31,12 +33,32 @@ class HibernateTaskRepositoryTest {
     }
 
     @BeforeEach
-    public void deleteFromDb() {
+    public void deleteFromTasksDb() {
         Session session = sessionFactory.openSession();
         try {
             session.beginTransaction();
             session.createQuery("DELETE Task").executeUpdate();
             session.createNativeQuery("ALTER TABLE tasks ALTER COLUMN id RESTART WITH 1").executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+    }
+
+    @BeforeEach
+    public void deleteFromUsersDbAndAdd() {
+        this.user = new User();
+        user.setLogin("login");
+        user.setPassword("password");
+        user.setName("name");
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.createQuery("DELETE User").executeUpdate();
+            session.createNativeQuery("ALTER TABLE users ALTER COLUMN id RESTART WITH 1").executeUpdate();
+            session.persist(user);
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -55,6 +77,7 @@ class HibernateTaskRepositoryTest {
         Task task1 = new Task();
         task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
+        task1.setUser(user);
         Optional<Task> optionalTask = hibernateTaskRepository.save(task1);
 
         assertThat(optionalTask.get()).isEqualTo(task1);
@@ -69,12 +92,15 @@ class HibernateTaskRepositoryTest {
 
     @Test
     public void whenGetAllTasksThenGetCollection() {
+
         Task task1 = new Task();
         task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
+        task1.setUser(user);
         Task task2 = new Task();
         task2.setTitle("Clean the room");
         task2.setCreated(LocalDateTime.now());
+        task2.setUser(user);
         hibernateTaskRepository.save(task1);
         hibernateTaskRepository.save(task2);
 
@@ -85,12 +111,15 @@ class HibernateTaskRepositoryTest {
 
     @Test
     public void whenGetTasksByStatusThenGetCollection() {
+
         Task task1 = new Task();
         task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
+        task1.setUser(user);
         Task task2 = new Task();
         task2.setTitle("Clean the room");
         task2.setCreated(LocalDateTime.now());
+        task2.setUser(user);
         task2.setDone(true);
         hibernateTaskRepository.save(task1);
         hibernateTaskRepository.save(task2);
@@ -104,14 +133,17 @@ class HibernateTaskRepositoryTest {
 
     @Test
     public void whenUpdateTasksThenGetTasksUpdated() {
+
         Task task1 = new Task();
         task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
+        task1.setUser(user);
         hibernateTaskRepository.save(task1);
 
         Task task2 = new Task();
         task2.setId(task1.getId());
         task2.setTitle("Clean the room");
+        task2.setUser(task1.getUser());
         hibernateTaskRepository.update(task2);
 
         assertThat(hibernateTaskRepository.getById(1).get().getTitle()).isEqualTo("Clean the room");
@@ -122,6 +154,7 @@ class HibernateTaskRepositoryTest {
         Task task1 = new Task();
         task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
+        task1.setUser(user);
         hibernateTaskRepository.save(task1);
 
         hibernateTaskRepository.updateTaskStatus(1);
@@ -134,6 +167,7 @@ class HibernateTaskRepositoryTest {
         Task task1 = new Task();
         task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
+        task1.setUser(user);
         hibernateTaskRepository.save(task1);
 
         hibernateTaskRepository.deleteById(1);

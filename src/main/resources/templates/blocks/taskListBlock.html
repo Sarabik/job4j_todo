@@ -2,8 +2,9 @@
     <thead>
     <tr>
       <th class="col-1">#</th>
-      <th class="col-5">Task</th>
-      <th class="col-4">Created</th>
+      <th class="col-4">Task</th>
+      <th class="col-3">Created</th>
+      <th class="col-2">User</th>
       <th class="col-2">Done</th>
     </tr>
     </thead>
@@ -16,6 +17,7 @@
           </a>
       </td>
       <td style="min-width: 150px" th:text="${#temporals.format(task.created, 'dd.MM.yyyy HH:mm')}"></td>
+      <td th:text="${task.user.name}"></td>
       <td>
         <span th:if="${task.done}">
             <i class="bi bi-check-square"></i>

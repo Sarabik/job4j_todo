@@ -23,4 +23,7 @@ public class Task {
 
     private boolean done;
 
+    @ManyToOne
+    @JoinColumn(name = "users_id")
+    private User user;
 }
