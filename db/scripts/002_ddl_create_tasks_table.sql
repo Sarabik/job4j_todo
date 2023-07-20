@@ -3,5 +3,6 @@ CREATE TABLE if NOT EXISTS tasks (
    title VARCHAR NOT NULL,
    description TEXT,
    created TIMESTAMP,
-   done BOOLEAN
+   done BOOLEAN,
+   users_id INT NOT NULL references users(id) ON DELETE CASCADE
 );

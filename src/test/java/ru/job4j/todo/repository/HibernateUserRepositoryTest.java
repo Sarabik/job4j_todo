@@ -16,7 +16,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HibernateUserRepositoryTest {
-    /*private static UserRepository hibernateUserRepository;
+    private static UserRepository hibernateUserRepository;
     private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
 
@@ -71,5 +71,5 @@ class HibernateUserRepositoryTest {
         Optional<User> optionalUser = hibernateUserRepository.findByLoginAndPassword("login", "password");
 
         assertThat(optionalUser.get()).isEqualTo(user);
-    }*/
+    }
 }
