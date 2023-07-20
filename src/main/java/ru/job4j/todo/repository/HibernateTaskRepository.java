@@ -14,11 +14,11 @@ public class HibernateTaskRepository implements TaskRepository {
 
     @Override
     public Optional<Task> save(Task task) {
-        Optional<Task> optionalTask;
+        Optional<Task> optionalTask = Optional.empty();
         try {
             optionalTask = crudRepository.getOptional(task);
         } catch (Exception e) {
-            optionalTask = Optional.empty();
+            e.printStackTrace();
         }
         return optionalTask;
     }
@@ -36,47 +36,47 @@ public class HibernateTaskRepository implements TaskRepository {
 
     @Override
     public Optional<Task> getById(int id) {
-        Optional<Task> optionalTask;
+        Optional<Task> optionalTask = Optional.empty();
         try {
             optionalTask = crudRepository.getOptional(
                     "FROM Task WHERE id = :fId", Task.class, Map.of("fId", id));
         } catch (Exception e) {
-            optionalTask = Optional.empty();
+            e.printStackTrace();
         }
         return optionalTask;
     }
 
     @Override
     public boolean update(Task task) {
-        boolean ifUpdated;
+        boolean ifUpdated = false;
         try {
             ifUpdated = crudRepository.ifChanged(task);
         } catch (Exception e) {
-            ifUpdated = false;
+            e.printStackTrace();
         }
         return ifUpdated;
     }
 
     @Override
     public boolean updateTaskStatus(int id) {
-        boolean ifUpdated;
+        boolean ifUpdated = false;
         try {
             ifUpdated = crudRepository.ifChanged(
                     "UPDATE Task SET done = true WHERE id = :fId", Map.of("fId", id));
         } catch (Exception e) {
-            ifUpdated = false;
+            e.printStackTrace();
         }
         return ifUpdated;
     }
 
     @Override
     public boolean deleteById(int id) {
-        boolean ifDeleted;
+        boolean ifDeleted = false;
         try {
             ifDeleted = crudRepository.ifChanged(
                     "DELETE Task WHERE id = :fId", Map.of("fId", id));
         } catch (Exception e) {
-            ifDeleted = false;
+            e.printStackTrace();
         }
         return ifDeleted;
     }
