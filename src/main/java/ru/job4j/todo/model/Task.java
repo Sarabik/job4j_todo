@@ -26,4 +26,8 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "users_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "priority_id")
+    private Priority priority;
 }
