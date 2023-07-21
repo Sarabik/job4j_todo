@@ -1,0 +1,1 @@
+ALTER TABLE tasks ADD COLUMN priority_id int NOT NULL REFERENCES priorities(id);

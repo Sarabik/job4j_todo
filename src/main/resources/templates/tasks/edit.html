@@ -34,6 +34,12 @@
                 <textarea type="text" class="form-control border border-primary border-opacity-50" rows="7" th:field="*{description}"
                           id="description" name="description" placeholder="Enter additional information about this task"></textarea>
       </div>
+      <div class="mb-3">
+        <label for="priority">Select task priority:</label>
+        <select class="form-control border border-primary border-opacity-50" id="priority" name="priority.id">
+          <option th:each="pr : ${priorities}" th:value="${pr.id}" th:text="${pr.name}" th:selected="${pr.name==selectedTask.priority.name}"></option>
+        </select>
+      </div>
       <div class="form-check mb-3">
         <input type="checkbox" name="done" class="form-check-input" id="done" th:field="*{done}">
         <label class="form-check-label" for="done">Task is done</label>

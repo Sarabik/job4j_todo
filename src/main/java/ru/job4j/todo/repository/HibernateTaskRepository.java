@@ -25,13 +25,14 @@ public class HibernateTaskRepository implements TaskRepository {
 
     @Override
     public Collection<Task> getAll() {
-        return crudRepository.query("FROM Task ORDER BY id", Task.class);
+        return crudRepository.query("FROM Task t JOIN FETCH t.priority ORDER BY t.id", Task.class);
     }
 
     @Override
     public Collection<Task> getByStatus(boolean status) {
         return crudRepository.query(
-                "FROM Task WHERE done = :fStatus ORDER BY id", Task.class, Map.of("fStatus", status));
+                "FROM Task  t JOIN FETCH t.priority WHERE done = :fStatus ORDER BY t.id",
+                Task.class, Map.of("fStatus", status));
     }
 
     @Override
@@ -39,7 +40,8 @@ public class HibernateTaskRepository implements TaskRepository {
         Optional<Task> optionalTask = Optional.empty();
         try {
             optionalTask = crudRepository.getOptional(
-                    "FROM Task WHERE id = :fId", Task.class, Map.of("fId", id));
+                    "FROM Task t JOIN FETCH t.priority WHERE t.id = :fId",
+                    Task.class, Map.of("fId", id));
         } catch (Exception e) {
             e.printStackTrace();
         }

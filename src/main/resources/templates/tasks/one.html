@@ -30,6 +30,8 @@
                 <dd class="col-sm-9" th:text="*{description}"></dd>
                 <dt class="col-sm-3">Created:</dt>
                 <dd class="col-sm-9" th:text="*{#temporals.format(created, 'dd.MM.yyyy HH:mm')}"></dd>
+                <dt class="col-sm-3">Task priority:</dt>
+                <dd class="col-sm-9" th:text="*{priority.name}"></dd>
                 <dt class="col-sm-3">Done:</dt>
                 <dd class="col-sm-9">
                     <span th:if="*{done}">

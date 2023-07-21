@@ -31,6 +31,12 @@
                 <textarea type="text" class="form-control border border-primary border-opacity-50" rows="7"
                           id="description" name="description" placeholder="Enter additional information about this task"></textarea>
             </div>
+            <div class="mb-3">
+                <label for="priority">Select task priority:</label>
+                <select class="form-control border border-primary border-opacity-50" id="priority" name="priority.id">
+                    <option th:each="priority : ${priorities}" th:value="${priority.id}" th:text="${priority.name}"></option>
+                </select>
+            </div>
             <div class="pb-2">
                 <button type="submit" class="btn btn-primary">Add task</button>
                 <a class="btn btn-primary opacity-50 m-2" href="/tasks" role="button">Back to task list</a>

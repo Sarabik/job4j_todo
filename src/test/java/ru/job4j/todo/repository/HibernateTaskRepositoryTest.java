@@ -11,15 +11,18 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 class HibernateTaskRepositoryTest {
     private static TaskRepository hibernateTaskRepository;
+    private static Priority priority;
     private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
     private User user;
@@ -30,6 +33,9 @@ class HibernateTaskRepositoryTest {
                 .configure().build();
         sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
         hibernateTaskRepository = new HibernateTaskRepository(new CrudRepository(sessionFactory));
+        PriorityRepository priorityRepository = new HibernatePriorityRepository(new CrudRepository(sessionFactory));
+        List<Priority> priorities = priorityRepository.getAll().stream().toList();
+        priority = priorities.get(0);
     }
 
     @BeforeEach
@@ -78,6 +84,7 @@ class HibernateTaskRepositoryTest {
         task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
         task1.setUser(user);
+        task1.setPriority(priority);
         Optional<Task> optionalTask = hibernateTaskRepository.save(task1);
 
         assertThat(optionalTask.get()).isEqualTo(task1);
@@ -97,10 +104,12 @@ class HibernateTaskRepositoryTest {
         task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
         task1.setUser(user);
+        task1.setPriority(priority);
         Task task2 = new Task();
         task2.setTitle("Clean the room");
         task2.setCreated(LocalDateTime.now());
         task2.setUser(user);
+        task2.setPriority(priority);
         hibernateTaskRepository.save(task1);
         hibernateTaskRepository.save(task2);
 
@@ -116,10 +125,12 @@ class HibernateTaskRepositoryTest {
         task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
         task1.setUser(user);
+        task1.setPriority(priority);
         Task task2 = new Task();
         task2.setTitle("Clean the room");
         task2.setCreated(LocalDateTime.now());
         task2.setUser(user);
+        task2.setPriority(priority);
         task2.setDone(true);
         hibernateTaskRepository.save(task1);
         hibernateTaskRepository.save(task2);
@@ -138,12 +149,14 @@ class HibernateTaskRepositoryTest {
         task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
         task1.setUser(user);
+        task1.setPriority(priority);
         hibernateTaskRepository.save(task1);
 
         Task task2 = new Task();
         task2.setId(task1.getId());
         task2.setTitle("Clean the room");
         task2.setUser(task1.getUser());
+        task2.setPriority(task1.getPriority());
         hibernateTaskRepository.update(task2);
 
         assertThat(hibernateTaskRepository.getById(1).get().getTitle()).isEqualTo("Clean the room");
@@ -155,6 +168,7 @@ class HibernateTaskRepositoryTest {
         task1.setTitle("Write a book");
         task1.setCreated(LocalDateTime.now());
         task1.setUser(user);
+        task1.setPriority(priority);
         hibernateTaskRepository.save(task1);
 
         hibernateTaskRepository.updateTaskStatus(1);
