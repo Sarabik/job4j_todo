@@ -25,6 +25,7 @@ class HibernateTaskRepositoryTest {
     private static Priority priority;
     private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
+    private static CategoryRepository categoryRepository;
     private User user;
 
     @BeforeAll
@@ -33,6 +34,7 @@ class HibernateTaskRepositoryTest {
                 .configure().build();
         sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
         hibernateTaskRepository = new HibernateTaskRepository(new CrudRepository(sessionFactory));
+        categoryRepository = new HibernateCategoryRepository(new CrudRepository(sessionFactory));
         PriorityRepository priorityRepository = new HibernatePriorityRepository(new CrudRepository(sessionFactory));
         List<Priority> priorities = priorityRepository.getAll().stream().toList();
         priority = priorities.get(0);
@@ -150,6 +152,7 @@ class HibernateTaskRepositoryTest {
         task1.setCreated(LocalDateTime.now());
         task1.setUser(user);
         task1.setPriority(priority);
+        task1.getCategories().add(categoryRepository.getById(1).get());
         hibernateTaskRepository.save(task1);
 
         Task task2 = new Task();
@@ -157,6 +160,7 @@ class HibernateTaskRepositoryTest {
         task2.setTitle("Clean the room");
         task2.setUser(task1.getUser());
         task2.setPriority(task1.getPriority());
+        task2.setCategories(task1.getCategories());
         hibernateTaskRepository.update(task2);
 
         assertThat(hibernateTaskRepository.getById(1).get().getTitle()).isEqualTo("Clean the room");
@@ -169,6 +173,7 @@ class HibernateTaskRepositoryTest {
         task1.setCreated(LocalDateTime.now());
         task1.setUser(user);
         task1.setPriority(priority);
+        task1.getCategories().add(categoryRepository.getById(1).get());
         hibernateTaskRepository.save(task1);
 
         hibernateTaskRepository.updateTaskStatus(1);

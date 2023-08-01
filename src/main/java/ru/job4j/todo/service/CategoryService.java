@@ -10,4 +10,5 @@ public interface CategoryService {
     Collection<Category> getAll();
 
     Optional<Category> getById(int id);
+
 }

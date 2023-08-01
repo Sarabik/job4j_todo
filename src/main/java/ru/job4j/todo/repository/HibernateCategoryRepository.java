@@ -31,4 +31,5 @@ public class HibernateCategoryRepository implements CategoryRepository {
         }
         return optionalCategory;
     }
+
 }

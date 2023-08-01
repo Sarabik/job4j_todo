@@ -23,5 +23,4 @@ public class SimpleCategoryService implements CategoryService {
     public Optional<Category> getById(int id) {
         return categoryRepository.getById(id);
     }
-
 }
