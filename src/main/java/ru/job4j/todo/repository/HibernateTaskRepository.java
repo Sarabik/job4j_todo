@@ -40,7 +40,7 @@ public class HibernateTaskRepository implements TaskRepository {
         Optional<Task> optionalTask = Optional.empty();
         try {
             optionalTask = crudRepository.getOptional(
-                    "FROM Task t JOIN FETCH t.priority WHERE t.id = :fId",
+                    "FROM Task t JOIN FETCH t.priority JOIN FETCH t.categories WHERE t.id = :fId",
                     Task.class, Map.of("fId", id));
         } catch (Exception e) {
             e.printStackTrace();

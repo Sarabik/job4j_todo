@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -22,6 +23,8 @@ public class TaskController {
     private final TaskService taskService;
 
     private final PriorityService priorityService;
+
+    private final CategoryService categoryService;
 
     @GetMapping
     public String getAllTaskPage(Model model) {
@@ -44,14 +47,18 @@ public class TaskController {
     @GetMapping("/create")
     public String getCreationPage(Model model) {
         model.addAttribute("priorities", priorityService.getAll());
+        model.addAttribute("categories", categoryService.getAll());
         return "tasks/create";
     }
 
     @PostMapping("/create")
-    public String createTask(@ModelAttribute Task task, HttpServletRequest request) {
+    public String createTask(@ModelAttribute Task task, @RequestParam List<Integer> categoryList, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         task.setCreated(LocalDateTime.now());
         task.setUser(user);
+        for (int categoryId : categoryList) {
+            task.getCategories().add(categoryService.getById(categoryId).get());
+        }
         taskService.save(task);
         return "redirect:/";
     }
@@ -85,13 +92,17 @@ public class TaskController {
             return "errors/404";
         }
         model.addAttribute("priorities", priorityService.getAll());
+        model.addAttribute("categories", categoryService.getAll());
         model.addAttribute("selectedTask", optionalTask.get());
         return "tasks/edit";
     }
 
     @PostMapping("/update")
-    public String updateTask(@ModelAttribute Task task, Model model, HttpServletRequest request) {
+    public String updateTask(@ModelAttribute Task task, @RequestParam List<Integer> categoryList, Model model, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
+        for (int categoryId : categoryList) {
+            task.getCategories().add(categoryService.getById(categoryId).get());
+        }
         task.setUser(user);
         boolean isUpdated = taskService.update(task);
         if (!isUpdated) {

@@ -25,16 +25,22 @@
         <form th:action="@{/tasks/create}" method="post">
             <div class="mb-3">
                 <textarea type="text" class="form-control border border-primary border-opacity-50" rows="2"
-                          id="title" name="title" placeholder="Enter new task"></textarea>
+                          id="title" name="title" placeholder="Enter new task" required></textarea>
             </div>
             <div class="mb-3">
                 <textarea type="text" class="form-control border border-primary border-opacity-50" rows="7"
-                          id="description" name="description" placeholder="Enter additional information about this task"></textarea>
+                          id="description" name="description" placeholder="Enter additional information about this task" required></textarea>
             </div>
             <div class="mb-3">
                 <label for="priority">Select task priority:</label>
                 <select class="form-control border border-primary border-opacity-50" id="priority" name="priority.id">
                     <option th:each="priority : ${priorities}" th:value="${priority.id}" th:text="${priority.name}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="categories">Select task category:</label>
+                <select class="form-control border border-primary border-opacity-50" id="categories" name="categoryList" multiple required>
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${category.name=='Without category'}"></option>
                 </select>
             </div>
             <div class="pb-2">

@@ -40,6 +40,12 @@
           <option th:each="pr : ${priorities}" th:value="${pr.id}" th:text="${pr.name}" th:selected="${pr.name==selectedTask.priority.name}"></option>
         </select>
       </div>
+      <div class="mb-3">
+        <label for="priority">Select task category:</label>
+        <select class="form-control border border-primary border-opacity-50" id="categories" name="categoryList" multiple required>
+          <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${selectedTask.categories.contains(category)}"></option>
+        </select>
+      </div>
       <div class="form-check mb-3">
         <input type="checkbox" name="done" class="form-check-input" id="done" th:field="*{done}">
         <label class="form-check-label" for="done">Task is done</label>
