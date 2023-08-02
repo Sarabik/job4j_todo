@@ -152,7 +152,7 @@ class HibernateTaskRepositoryTest {
         task1.setCreated(LocalDateTime.now());
         task1.setUser(user);
         task1.setPriority(priority);
-        task1.getCategories().add(categoryRepository.getById(1).get());
+        task1.getCategories().addAll(categoryRepository.getSomeById(List.of(1)));
         hibernateTaskRepository.save(task1);
 
         Task task2 = new Task();
@@ -173,7 +173,7 @@ class HibernateTaskRepositoryTest {
         task1.setCreated(LocalDateTime.now());
         task1.setUser(user);
         task1.setPriority(priority);
-        task1.getCategories().add(categoryRepository.getById(1).get());
+        task1.getCategories().addAll(categoryRepository.getSomeById(List.of(1)));
         hibernateTaskRepository.save(task1);
 
         hibernateTaskRepository.updateTaskStatus(1);

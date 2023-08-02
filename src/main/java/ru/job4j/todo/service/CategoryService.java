@@ -10,5 +10,4 @@ public interface CategoryService {
     Collection<Category> getAll();
 
     Collection<Category> getSomeById(List<Integer> idList);
-
 }

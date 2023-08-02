@@ -23,4 +23,5 @@ public class SimpleCategoryService implements CategoryService {
     public Collection<Category> getSomeById(List<Integer> idList) {
         return categoryRepository.getSomeById(idList);
     }
+
 }

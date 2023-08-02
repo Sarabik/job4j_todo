@@ -10,4 +10,5 @@ public interface CategoryRepository {
     Collection<Category> getAll();
 
     Collection<Category> getSomeById(List<Integer> idList);
+
 }

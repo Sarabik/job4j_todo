@@ -24,5 +24,4 @@ public class HibernateCategoryRepository implements CategoryRepository {
         return crudRepository.query("FROM Category c WHERE c.id IN :cCategoryList",
                 Category.class, Map.of("cCategoryList", idList));
     }
-
 }
