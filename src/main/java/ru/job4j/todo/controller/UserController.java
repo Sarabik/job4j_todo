@@ -12,7 +12,9 @@ import ru.job4j.todo.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
+import java.util.*;
+
+import static ru.job4j.todo.utility.TimeZonesUtility.TIMEZONES;
 
 @Controller
 @AllArgsConstructor
@@ -40,11 +42,18 @@ public class UserController {
 
     @GetMapping("/registration")
     public String getRegistrationPage(Model model) {
+        model.addAttribute("zones", TIMEZONES.keySet());
         return "users/registration";
     }
 
     @PostMapping("/registration")
     public String registration(@ModelAttribute User user, Model model) {
+        if (user.getTimezone().isEmpty()) {
+            TimeZone timeZone = TimeZone.getDefault();
+            user.setTimezone(timeZone.getID());
+        } else {
+            user.setTimezone(TIMEZONES.get(user.getTimezone()));
+        }
         Optional<User> optionalUser = userService.save(user);
         if (optionalUser.isEmpty()) {
             model.addAttribute("message", "User with this email already exists");

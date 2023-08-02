@@ -25,7 +25,7 @@
     <form th:action="@{/tasks/update}" method="post">
       <input type="hidden" name="id" th:field="*{id}">
       <input type="hidden" name="created" th:field="*{created}">
-      <p>Created: <span th:text="*{#temporals.format(created, 'dd.MM.yyyy HH:mm')}"></span></p>
+      <p>Created: <span th:text="${#temporals.format(dateWithCurrentTimeZone, 'dd.MM.yyyy HH:mm')}"></span></p>
       <div class="mb-3">
                 <textarea type="text" class="form-control border border-primary border-opacity-50" rows="2" th:field="*{title}"
                           id="title" name="title" placeholder="Enter new task"></textarea>

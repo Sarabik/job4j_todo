@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import ru.job4j.todo.model.User;
 
 import java.util.Optional;
+import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,6 +56,7 @@ class HibernateUserRepositoryTest {
         user.setName("name");
         user.setLogin("login");
         user.setPassword("password");
+        user.setTimezone(TimeZone.getDefault().getID());
         Optional<User> optionalUser = hibernateUserRepository.save(user);
 
         assertThat(optionalUser.get()).isEqualTo(user);
@@ -66,6 +68,7 @@ class HibernateUserRepositoryTest {
         user.setName("name");
         user.setLogin("login");
         user.setPassword("password");
+        user.setTimezone(TimeZone.getDefault().getID());
         hibernateUserRepository.save(user);
 
         Optional<User> optionalUser = hibernateUserRepository.findByLoginAndPassword("login", "password");

@@ -12,8 +12,10 @@ import ru.job4j.todo.service.TaskService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.util.*;
+
+import static ru.job4j.todo.utility.TimeZonesUtility.*;
 
 @Controller
 @AllArgsConstructor
@@ -27,20 +29,26 @@ public class TaskController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public String getAllTaskPage(Model model) {
-        model.addAttribute("tasks", taskService.getAll());
+    public String getAllTaskPage(Model model, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        Collection<Task> tasks = taskService.getAll();
+        model.addAttribute("tasks", tasksToCurrentTimeZone(tasks, user));
         return "tasks/list";
     }
 
     @GetMapping("/notDone")
-    public String getNotDoneTaskPage(Model model) {
-        model.addAttribute("tasks", taskService.getByStatus(false));
+    public String getNotDoneTaskPage(Model model, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        Collection<Task> tasks = taskService.getByStatus(false);
+        model.addAttribute("tasks", tasksToCurrentTimeZone(tasks, user));
         return "tasks/notDone";
     }
 
     @GetMapping("/done")
-    public String getDoneTaskPage(Model model) {
-        model.addAttribute("tasks", taskService.getByStatus(true));
+    public String getDoneTaskPage(Model model, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        Collection<Task> tasks = taskService.getByStatus(true);
+        model.addAttribute("tasks", tasksToCurrentTimeZone(tasks, user));
         return "tasks/done";
     }
 
@@ -54,7 +62,7 @@ public class TaskController {
     @PostMapping("/create")
     public String createTask(@ModelAttribute Task task, @RequestParam List<Integer> categoryList, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
-        task.setCreated(LocalDateTime.now());
+        task.setCreated(LocalDateTime.now(ZoneId.of("UTC")));
         task.setUser(user);
         task.getCategories().addAll(categoryService.getSomeById(categoryList));
         taskService.save(task);
@@ -62,13 +70,16 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}")
-    public String getSelectedTaskPage(@PathVariable int taskId, Model model) {
+    public String getSelectedTaskPage(@PathVariable int taskId, Model model, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
         Optional<Task> optionalTask = taskService.getById(taskId);
         if (optionalTask.isEmpty()) {
             model.addAttribute("message", "Task is not found");
             return "errors/404";
         }
-        model.addAttribute("selectedTask", optionalTask.get());
+        Task task = optionalTask.get();
+        model.addAttribute("dateWithCurrentTimeZone", dateToCurrentTimeZone(task.getCreated(), user));
+        model.addAttribute("selectedTask", task);
         return "tasks/one";
     }
 
@@ -83,15 +94,18 @@ public class TaskController {
     }
 
     @GetMapping("/edit/{id}")
-    public String getEditPage(@PathVariable int id, Model model) {
+    public String getEditPage(@PathVariable int id, Model model, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
         Optional<Task> optionalTask = taskService.getById(id);
         if (optionalTask.isEmpty()) {
             model.addAttribute("message", "Task is not found!");
             return "errors/404";
         }
+        Task task = optionalTask.get();
+        model.addAttribute("dateWithCurrentTimeZone", dateToCurrentTimeZone(task.getCreated(), user));
         model.addAttribute("priorities", priorityService.getAll());
         model.addAttribute("categories", categoryService.getAll());
-        model.addAttribute("selectedTask", optionalTask.get());
+        model.addAttribute("selectedTask", task);
         return "tasks/edit";
     }
 

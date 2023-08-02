@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.TimeZone;
 
 class HibernateTaskRepositoryTest {
     private static TaskRepository hibernateTaskRepository;
@@ -61,6 +62,7 @@ class HibernateTaskRepositoryTest {
         user.setLogin("login");
         user.setPassword("password");
         user.setName("name");
+        user.setTimezone(TimeZone.getDefault().getID());
         Session session = sessionFactory.openSession();
         try {
             session.beginTransaction();
