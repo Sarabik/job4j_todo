@@ -56,9 +56,7 @@ public class TaskController {
         User user = (User) request.getSession().getAttribute("user");
         task.setCreated(LocalDateTime.now());
         task.setUser(user);
-        for (int categoryId : categoryList) {
-            task.getCategories().add(categoryService.getById(categoryId).get());
-        }
+        task.getCategories().addAll(categoryService.getSomeById(categoryList));
         taskService.save(task);
         return "redirect:/";
     }
@@ -100,9 +98,7 @@ public class TaskController {
     @PostMapping("/update")
     public String updateTask(@ModelAttribute Task task, @RequestParam List<Integer> categoryList, Model model, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
-        for (int categoryId : categoryList) {
-            task.getCategories().add(categoryService.getById(categoryId).get());
-        }
+        task.getCategories().addAll(categoryService.getSomeById(categoryList));
         task.setUser(user);
         boolean isUpdated = taskService.update(task);
         if (!isUpdated) {

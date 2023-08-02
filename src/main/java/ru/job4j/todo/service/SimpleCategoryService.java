@@ -6,7 +6,7 @@ import ru.job4j.todo.model.Category;
 import ru.job4j.todo.repository.CategoryRepository;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -20,7 +20,7 @@ public class SimpleCategoryService implements CategoryService {
     }
 
     @Override
-    public Optional<Category> getById(int id) {
-        return categoryRepository.getById(id);
+    public Collection<Category> getSomeById(List<Integer> idList) {
+        return categoryRepository.getSomeById(idList);
     }
 }
